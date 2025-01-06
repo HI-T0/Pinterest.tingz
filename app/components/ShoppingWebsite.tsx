@@ -13,6 +13,7 @@ import productsData from '../data/products.json'
 
 export default function ShoppingWebsite() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [email, setEmail] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [showCart, setShowCart] = useState(false)
@@ -49,6 +50,7 @@ export default function ShoppingWebsite() {
       const data = await response.json()
       if (data.success) {
         setIsAuthenticated(true)
+        setEmail(email)
         setIsAdmin(data.isAdmin)
       }
     } catch (error) {
