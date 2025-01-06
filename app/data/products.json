@@ -1,0 +1,52 @@
+[
+    {
+      "id": 1,
+      "name": "Aesthetic Canvas Tote",
+      "price": 3299,
+      "category": "tote",
+      "description": "A stylish and spacious canvas tote perfect for everyday use.",
+      "image": "/placeholder.svg?height=400&width=400"
+    },
+    {
+      "id": 2,
+      "name": "Y2K Butterfly Necklace",
+      "price": 4799,
+      "category": "jewelry",
+      "description": "A trendy butterfly necklace inspired by Y2K fashion.",
+      "image": "/placeholder.svg?height=400&width=400"
+    },
+    {
+      "id": 3,
+      "name": "Vintage Leather Tote",
+      "price": 7999,
+      "category": "tote",
+      "description": "A classic leather tote with a vintage look and feel.",
+      "image": "/placeholder.svg?height=400&width=400"
+    },
+    {
+      "id": 4,
+      "name": "Crystal Dream Bracelet",
+      "price": 8999,
+      "category": "jewelry",
+      "description": "An elegant bracelet adorned with sparkling crystals.",
+      "image": "/placeholder.svg?height=400&width=400"
+    },
+    {
+      "id": 5,
+      "name": "Summer Vibes Tote",
+      "price": 3999,
+      "category": "tote",
+      "description": "A colorful and fun tote bag perfect for summer outings.",
+      "image": "/placeholder.svg?height=400&width=400"
+    },
+    {
+      "id": 6,
+      "name": "Fairy Core Earrings",
+      "price": 5999,
+      "category": "jewelry",
+      "description": "Whimsical earrings inspired by fairy tales and nature.",
+      "image": "/placeholder.svg?height=400&width=400"
+    }
+  ]
+  
+  
