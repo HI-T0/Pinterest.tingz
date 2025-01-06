@@ -1,15 +1,20 @@
 import React, { useState, useRef } from 'react'
-import { X, Upload, Trash2 } from 'lucide-react'
+import { X, Upload } from 'lucide-react'
 import { Product } from '../types'
 
 interface EditProductModalProps {
   product: Product
   onSave: (updatedProduct: Product) => void
-  onDelete: (productId: number) => void
   onClose: () => void
+  onDelete: (productId: number) => void  // Added this prop definition
 }
 
-export default function EditProductModal({ product, onSave, onDelete, onClose }: EditProductModalProps) {
+export default function EditProductModal({ 
+  product, 
+  onSave, 
+  onClose,
+  onDelete 
+}: EditProductModalProps) {
   const [editedProduct, setEditedProduct] = useState(product)
   const [imagePreview, setImagePreview] = useState<string | null>(product.image)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -137,19 +142,18 @@ export default function EditProductModal({ product, onSave, onDelete, onClose }:
             </div>
           </div>
         </form>
-        <div className="mt-4 flex justify-between">
+        <div className="mt-4 flex justify-between gap-4">
           <button
             type="button"
             onClick={handleDelete}
             className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium flex items-center"
           >
-            <Trash2 className="mr-2" size={20} />
             Delete
           </button>
           <button
             type="submit"
             onClick={handleSubmit}
-            className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-medium"
+            className="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors font-medium flex-1"
           >
             Save Changes
           </button>
@@ -158,6 +162,5 @@ export default function EditProductModal({ product, onSave, onDelete, onClose }:
     </div>
   )
 }
-
 
 
