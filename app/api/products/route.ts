@@ -55,7 +55,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, product: productWithId })
   } catch (error) {
     console.error('Error in POST /api/products:', error)
-    return NextResponse.json({ error: 'Failed to add product', details: error.message }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to add product', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })
   }
 }
 
@@ -72,7 +72,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: 'Product not found' }, { status: 404 })
   } catch (error) {
     console.error('Error in PUT /api/products:', error)
-    return NextResponse.json({ error: 'Failed to update product', details: error.message }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update product', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })
   }
 }
 
@@ -85,8 +85,7 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error in DELETE /api/products:', error)
-    return NextResponse.json({ error: 'Failed to delete product', details: error.message }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to delete product', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 })
   }
 }
-
 
