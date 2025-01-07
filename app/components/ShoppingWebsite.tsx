@@ -10,10 +10,11 @@ import AddProductModal from './AddProductModal'
 import LoadingBar from './LoadingBar'
 import { Product, CartItem } from '../types'
 import productsData from '../data/products.json'
-import Image from 'next/image' // Import Image component
 
 export default function ShoppingWebsite() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  // Remove this line
+  //const [email, setEmail] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [showCart, setShowCart] = useState(false)
@@ -165,3 +166,4 @@ export default function ShoppingWebsite() {
     </div>
   )
 }
+
