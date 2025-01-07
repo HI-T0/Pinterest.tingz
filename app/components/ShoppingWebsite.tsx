@@ -30,7 +30,7 @@ export default function ShoppingWebsite() {
     try {
       const response = await fetch('/api/products')
       if (!response.ok) {
-        throw new Error('Failed to fetch products')
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
       const data = await response.json()
       setProducts(data)
@@ -53,6 +53,8 @@ export default function ShoppingWebsite() {
       if (data.success) {
         setIsAuthenticated(true)
         setIsAdmin(data.isAdmin)
+      } else {
+        throw new Error(data.error || 'Authentication failed')
       }
     } catch (error) {
       console.error('Authentication error:', error)
@@ -101,12 +103,17 @@ export default function ShoppingWebsite() {
         body: JSON.stringify(updatedProduct),
       })
       if (!response.ok) {
-        throw new Error('Failed to update product')
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      setProducts(prevProducts =>
-        prevProducts.map(p => (p.id === updatedProduct.id ? updatedProduct : p))
-      )
-      setEditingProduct(null)
+      const data = await response.json()
+      if (data.success) {
+        setProducts(prevProducts =>
+          prevProducts.map(p => (p.id === updatedProduct.id ? updatedProduct : p))
+        )
+        setEditingProduct(null)
+      } else {
+        throw new Error(data.error || 'Failed to update product')
+      }
     } catch (error) {
       console.error('Error updating product:', error)
       setError('Failed to update product. Please try again.')
@@ -121,11 +128,16 @@ export default function ShoppingWebsite() {
         body: JSON.stringify({ id: productId }),
       })
       if (!response.ok) {
-        throw new Error('Failed to delete product')
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId))
-      setEditingProduct(null)
-      setCartItems(prevItems => prevItems.filter(item => item.id !== productId))
+      const data = await response.json()
+      if (data.success) {
+        setProducts(prevProducts => prevProducts.filter(p => p.id !== productId))
+        setEditingProduct(null)
+        setCartItems(prevItems => prevItems.filter(item => item.id !== productId))
+      } else {
+        throw new Error(data.error || 'Failed to delete product')
+      }
     } catch (error) {
       console.error('Error deleting product:', error)
       setError('Failed to delete product. Please try again.')
@@ -140,11 +152,15 @@ export default function ShoppingWebsite() {
         body: JSON.stringify(newProduct),
       })
       if (!response.ok) {
-        throw new Error('Failed to add product')
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
       const data = await response.json()
-      setProducts(prevProducts => [...prevProducts, data.product])
-      setShowAddProduct(false)
+      if (data.success) {
+        setProducts(prevProducts => [...prevProducts, data.product])
+        setShowAddProduct(false)
+      } else {
+        throw new Error(data.error || 'Failed to add product')
+      }
     } catch (error) {
       console.error('Error adding product:', error)
       setError('Failed to add product. Please try again.')
