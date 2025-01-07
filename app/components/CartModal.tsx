@@ -110,7 +110,7 @@ export default function CartModal({
                     onClick={handlePaymentComplete}
                     className="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition-colors font-medium"
                   >
-                    I've Completed the Payment
+                    I&apos;ve Completed the Payment
                   </button>
                 </div>
               )}
