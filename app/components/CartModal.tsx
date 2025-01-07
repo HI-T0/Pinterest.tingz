@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { X, Minus, Plus } from 'lucide-react'
 import { CartItem } from '../types'
 import OrderConfirmationModal from './OrderConfirmationModal'
+import Image from 'next/image'
 
 interface CartModalProps {
   cartItems: CartItem[]
@@ -53,9 +54,11 @@ export default function CartModal({
             <div className="space-y-4 mb-6">
               {cartItems.map(item => (
                 <div key={item.id} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-                  <img
+                  <Image
                     src={item.image}
                     alt={item.name}
+                    width={80}
+                    height={80}
                     className="w-20 h-20 object-cover rounded-lg"
                   />
                   <div className="flex-1">
@@ -107,7 +110,7 @@ export default function CartModal({
                     onClick={handlePaymentComplete}
                     className="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition-colors font-medium"
                   >
-                    I have Completed the Payment
+                    I've Completed the Payment
                   </button>
                 </div>
               )}
@@ -127,4 +130,5 @@ export default function CartModal({
     </div>
   )
 }
+
 
