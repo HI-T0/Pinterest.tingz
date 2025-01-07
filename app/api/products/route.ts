@@ -6,12 +6,22 @@ import { Product } from '../../types'
 const productsFilePath = path.join(process.cwd(), 'app/data/products.json')
 
 async function getProducts(): Promise<Product[]> {
-  const productsData = await fs.readFile(productsFilePath, 'utf8')
-  return JSON.parse(productsData)
+  try {
+    const productsData = await fs.readFile(productsFilePath, 'utf8')
+    return JSON.parse(productsData)
+  } catch (error) {
+    console.error('Error reading products file:', error)
+    return []
+  }
 }
 
 async function saveProducts(products: Product[]): Promise<void> {
-  await fs.writeFile(productsFilePath, JSON.stringify(products, null, 2))
+  try {
+    await fs.writeFile(productsFilePath, JSON.stringify(products, null, 2))
+  } catch (error) {
+    console.error('Error writing products file:', error)
+    throw error
+  }
 }
 
 export async function GET() {
@@ -19,7 +29,7 @@ export async function GET() {
     const products = await getProducts()
     return NextResponse.json(products)
   } catch (error) {
-    console.error('Error reading products:', error)
+    console.error('Error in GET /api/products:', error)
     return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 })
   }
 }
@@ -27,15 +37,25 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const newProduct: Omit<Product, 'id'> = await request.json()
+    console.log('Received new product:', newProduct)
+
+    // Validate the new product
+    if (!newProduct.name || !newProduct.price || !newProduct.category || !newProduct.description) {
+      return NextResponse.json({ error: 'Invalid product data' }, { status: 400 })
+    }
+
     const products = await getProducts()
-    const id = Math.max(...products.map(p => p.id), 0) + 1
+    const id = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1
     const productWithId = { id, ...newProduct }
+
     products.push(productWithId)
     await saveProducts(products)
+
+    console.log('Product added successfully:', productWithId)
     return NextResponse.json({ success: true, product: productWithId })
   } catch (error) {
-    console.error('Error adding product:', error)
-    return NextResponse.json({ error: 'Failed to add product' }, { status: 500 })
+    console.error('Error in POST /api/products:', error)
+    return NextResponse.json({ error: 'Failed to add product', details: error.message }, { status: 500 })
   }
 }
 
@@ -51,8 +71,8 @@ export async function PUT(request: Request) {
     }
     return NextResponse.json({ error: 'Product not found' }, { status: 404 })
   } catch (error) {
-    console.error('Error updating product:', error)
-    return NextResponse.json({ error: 'Failed to update product' }, { status: 500 })
+    console.error('Error in PUT /api/products:', error)
+    return NextResponse.json({ error: 'Failed to update product', details: error.message }, { status: 500 })
   }
 }
 
@@ -64,8 +84,8 @@ export async function DELETE(request: Request) {
     await saveProducts(products)
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting product:', error)
-    return NextResponse.json({ error: 'Failed to delete product' }, { status: 500 })
+    console.error('Error in DELETE /api/products:', error)
+    return NextResponse.json({ error: 'Failed to delete product', details: error.message }, { status: 500 })
   }
 }
 
