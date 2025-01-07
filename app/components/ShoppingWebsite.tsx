@@ -9,45 +9,38 @@ import LandingPage from './LandingPage'
 import AddProductModal from './AddProductModal'
 import LoadingBar from './LoadingBar'
 import { Product, CartItem } from '../types'
-import productsData from '../data/products.json'
 
 export default function ShoppingWebsite() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  // Remove this line
-  //const [email, setEmail] = useState('')
   const [isAdmin, setIsAdmin] = useState(false)
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [showCart, setShowCart] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [products, setProducts] = useState<Product[]>(productsData)
+  const [products, setProducts] = useState<Product[]>([])
   const [showAddProduct, setShowAddProduct] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Only access localStorage on the client side
-    const savedProducts = typeof window !== 'undefined' ? localStorage.getItem('products') : null
-    if (savedProducts) {
-      setProducts(JSON.parse(savedProducts))
-    }
+    fetchProducts()
   }, [])
 
-  useEffect(() => {
-    // Only save to localStorage on the client side
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('products', JSON.stringify(products))
-    }
-  }, [products])
-
-  useEffect(() => {
-    // Simulate loading
-    const timer = setTimeout(() => {
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('/api/products')
+      if (!response.ok) {
+        throw new Error('Failed to fetch products')
+      }
+      const data = await response.json()
+      setProducts(data)
+    } catch (error) {
+      console.error('Error fetching products:', error)
+      setError('Failed to load products. Please try again.')
+    } finally {
       setIsLoading(false)
-    }, 2000)
-
-    return () => clearTimeout(timer)
-  }, [])
+    }
+  }
 
   const handleEmailSubmit = async (email: string) => {
     try {
@@ -100,25 +93,62 @@ export default function ShoppingWebsite() {
     setEditingProduct(product)
   }
 
-  const handleSaveProduct = (updatedProduct: Product) => {
-    setProducts(prevProducts =>
-      prevProducts.map(p => (p.id === updatedProduct.id ? updatedProduct : p))
-    )
-    setEditingProduct(null)
+  const handleSaveProduct = async (updatedProduct: Product) => {
+    try {
+      const response = await fetch('/api/products', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProduct),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to update product')
+      }
+      setProducts(prevProducts =>
+        prevProducts.map(p => (p.id === updatedProduct.id ? updatedProduct : p))
+      )
+      setEditingProduct(null)
+    } catch (error) {
+      console.error('Error updating product:', error)
+      setError('Failed to update product. Please try again.')
+    }
   }
 
-  const handleDeleteProduct = (productId: number) => {
-    setProducts(prevProducts => prevProducts.filter(p => p.id !== productId))
-    setEditingProduct(null)
-    // Also remove the product from the cart if it's there
-    setCartItems(prevItems => prevItems.filter(item => item.id !== productId))
+  const handleDeleteProduct = async (productId: number) => {
+    try {
+      const response = await fetch('/api/products', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: productId }),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to delete product')
+      }
+      setProducts(prevProducts => prevProducts.filter(p => p.id !== productId))
+      setEditingProduct(null)
+      setCartItems(prevItems => prevItems.filter(item => item.id !== productId))
+    } catch (error) {
+      console.error('Error deleting product:', error)
+      setError('Failed to delete product. Please try again.')
+    }
   }
 
-  const handleAddProduct = (newProduct: Omit<Product, 'id'>) => {
-    const id = Math.max(...products.map(p => p.id)) + 1
-    const productWithId = { id, ...newProduct }
-    setProducts(prevProducts => [...prevProducts, productWithId])
-    setShowAddProduct(false)
+  const handleAddProduct = async (newProduct: Omit<Product, 'id'>) => {
+    try {
+      const response = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to add product')
+      }
+      const data = await response.json()
+      setProducts(prevProducts => [...prevProducts, data.product])
+      setShowAddProduct(false)
+    } catch (error) {
+      console.error('Error adding product:', error)
+      setError('Failed to add product. Please try again.')
+    }
   }
 
   if (!isAuthenticated) {
