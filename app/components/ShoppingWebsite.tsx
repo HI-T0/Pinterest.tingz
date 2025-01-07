@@ -20,16 +20,24 @@ export default function ShoppingWebsite() {
   const [showCart, setShowCart] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
-  const [products, setProducts] = useState<Product[]>(() => {
-    const savedProducts = localStorage.getItem('products')
-    return savedProducts ? JSON.parse(savedProducts) : productsData
-  })
+  const [products, setProducts] = useState<Product[]>(productsData)
   const [showAddProduct, setShowAddProduct] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    localStorage.setItem('products', JSON.stringify(products))
+    // Only access localStorage on the client side
+    const savedProducts = typeof window !== 'undefined' ? localStorage.getItem('products') : null
+    if (savedProducts) {
+      setProducts(JSON.parse(savedProducts))
+    }
+  }, [])
+
+  useEffect(() => {
+    // Only save to localStorage on the client side
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('products', JSON.stringify(products))
+    }
   }, [products])
 
   useEffect(() => {
@@ -166,4 +174,5 @@ export default function ShoppingWebsite() {
     </div>
   )
 }
+
 
