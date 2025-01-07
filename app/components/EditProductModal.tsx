@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { X, Upload } from 'lucide-react'
 import { Product } from '../types'
+import Image from 'next/image'
 
 interface EditProductModalProps {
   product: Product
@@ -136,7 +137,13 @@ export default function EditProductModal({
               </div>
               {imagePreview && (
                 <div className="mt-4">
-                  <img src={imagePreview} alt="Product preview" className="w-full h-48 object-cover rounded-lg" />
+                  <Image
+                    src={imagePreview}
+                    alt="Product preview"
+                    width={400}
+                    height={300}
+                    className="w-full h-48 object-cover rounded-lg"
+                  />
                 </div>
               )}
             </div>
@@ -162,5 +169,4 @@ export default function EditProductModal({
     </div>
   )
 }
-
 
