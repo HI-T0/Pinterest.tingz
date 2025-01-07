@@ -152,7 +152,8 @@ export default function ShoppingWebsite() {
         body: JSON.stringify(newProduct),
       })
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        const errorData = await response.json()
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`)
       }
       const data = await response.json()
       if (data.success) {
@@ -163,7 +164,7 @@ export default function ShoppingWebsite() {
       }
     } catch (error) {
       console.error('Error adding product:', error)
-      setError('Failed to add product. Please try again.')
+      setError(`Failed to add product. ${error.message}`)
     }
   }
 
