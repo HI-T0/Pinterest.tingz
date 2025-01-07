@@ -13,7 +13,7 @@ export default function AddProductModal({ onClose, onAddProduct }: AddProductMod
     name: '',
     price: 0,
     category: '',
-    description: '', // Added description field
+    description: '',
     image: '/placeholder.svg?height=400&width=400'
   })
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -38,6 +38,10 @@ export default function AddProductModal({ onClose, onAddProduct }: AddProductMod
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (!newProduct.name || !newProduct.price || !newProduct.category || !newProduct.description) {
+      alert('Please fill in all fields')
+      return
+    }
     onAddProduct(newProduct)
   }
 
@@ -156,5 +160,4 @@ export default function AddProductModal({ onClose, onAddProduct }: AddProductMod
     </div>
   )
 }
-
 
