@@ -164,7 +164,7 @@ export default function ShoppingWebsite() {
       }
     } catch (error) {
       console.error('Error adding product:', error)
-      setError(`Failed to add product. ${error.message}`)
+      setError(`Failed to add product. ${error instanceof Error ? error.message : 'Unknown error occurred'}`)
     }
   }
 
