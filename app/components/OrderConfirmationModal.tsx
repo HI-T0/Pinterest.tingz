@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
 import { CartItem } from '../types'
 import emailjs from '@emailjs/browser'
+import dynamic from 'next/dynamic'
+
+const Confetti = dynamic(() => import('react-confetti'), { ssr: false })
 
 interface OrderConfirmationModalProps {
   cartItems: CartItem[]
@@ -15,6 +18,17 @@ export default function OrderConfirmationModal({ cartItems, onClose }: OrderConf
   const [paymentCode, setPaymentCode] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 })
+
+  useEffect(() => {
+    const updateWindowSize = () => {
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight })
+    }
+    updateWindowSize()
+    window.addEventListener('resize', updateWindowSize)
+    return () => window.removeEventListener('resize', updateWindowSize)
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,7 +43,7 @@ export default function OrderConfirmationModal({ cartItems, onClose }: OrderConf
 
     try {
       const templateParams = {
-        to_email: 'Mish',
+        to_email: 'seller@example.com',
         from_name: name,
         from_email: email,
         phone: phone,
@@ -48,6 +62,7 @@ export default function OrderConfirmationModal({ cartItems, onClose }: OrderConf
       )
 
       console.log('Email sent successfully:', result.text)
+      setShowConfetti(true)
       onClose()
     } catch (error) {
       console.error('Failed to send email:', error)
@@ -62,10 +77,22 @@ export default function OrderConfirmationModal({ cartItems, onClose }: OrderConf
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      {showConfetti && (
+        <Confetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={500}
+          gravity={0.1}
+        />
+      )}
       <div className="bg-white p-6 rounded-xl max-w-md w-full">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold text-pink-600">Order Confirmation</h2>
-          <button onClick={onClose}>
+          <button onClick={() => {
+            setShowConfetti(false)
+            onClose()
+          }}>
             <X className="text-gray-500 hover:text-gray-700" />
           </button>
         </div>
