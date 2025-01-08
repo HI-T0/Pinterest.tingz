@@ -43,7 +43,7 @@ export default function OrderConfirmationModal({ cartItems, onClose }: OrderConf
 
     try {
       const templateParams = {
-        to_email: 'seller@example.com',
+        to_email: 'Mish',
         from_name: name,
         from_email: email,
         phone: phone,
