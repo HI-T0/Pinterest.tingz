@@ -1,6 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
-import { Heart, Edit2, Share2, Plus } from 'lucide-react'
+import { Edit2, Plus } from 'lucide-react'
 import { Product } from '../types'
 
 interface ProductGridProps {
@@ -67,11 +67,6 @@ export default function ProductGrid({
                 height={400}
                 className="w-full h-64 object-cover"
               />
-              <button
-                className="absolute top-4 right-4 p-2 bg-white rounded-full shadow-md hover:bg-pink-50"
-              >
-                <Heart className="text-pink-500" size={20} />
-              </button>
               {isAdmin && (
                 <button
                   onClick={() => onEditProduct(product)}
@@ -82,9 +77,8 @@ export default function ProductGrid({
               )}
             </div>
             <div className="p-6">
-              <div className="flex justify-between items-start mb-2">
+              <div className="flex items-start mb-2">
                 <h3 className="text-lg font-semibold text-gray-900">{product.name}</h3>
-                <Share2 className="text-gray-400 hover:text-pink-500 cursor-pointer" size={20} />
               </div>
               <p className="text-gray-500 mb-2">{product.description}</p>
               <p className="text-pink-600 font-bold text-xl mb-4">{formatPrice(product.price)}</p>
@@ -101,4 +95,5 @@ export default function ProductGrid({
     </>
   )
 }
+
 
